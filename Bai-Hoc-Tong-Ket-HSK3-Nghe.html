@@ -17,7 +17,7 @@ button { font-family: inherit; }
 .stage { position: absolute; inset: 0; }
 
 /* Phụ đề phủ trên khung phát, kiểu caption YouTube */
-.subtitle-overlay { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); max-width: 88%; width: max-content; background: rgba(0, 0, 0, .55); border-radius: 10px; padding: 14px 22px; text-align: center; }
+.subtitle-overlay { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); max-width: 88%; width: max-content; background: linear-gradient(135deg, rgba(37, 99, 235, .78), rgba(30, 58, 138, .72)); border-radius: 10px; padding: 14px 22px; text-align: center; }
 .subtitle-overlay.off { display: none; }
 .sub-zh { font-size: var(--sub-size); font-weight: 700; line-height: 2.3; color: #fff; font-family: "STKaiti", "KaiTi", "Kaiti SC", "STKaiti SC", "Noto Serif CJK SC", serif; }
 .sub-zh .sub-hint { font-size: 14px; font-weight: 400; color: #e5e5e5; }
@@ -69,6 +69,15 @@ body.hide-trans .story-trans { display: none; }
 .desc-more { display: none; }
 .desc-box.expanded .desc-more { display: block; }
 .desc-toggle { background: none; border: none; padding: 0; font-size: 14px; font-weight: 600; cursor: pointer; color: #0f0f0f; margin-top: 4px; }
+
+.chapters { margin-top: 18px; }
+.chapters h2 { font-size: 17px; margin: 0 0 6px; }
+.chapter-row { display: flex; gap: 12px; align-items: baseline; width: 100%; text-align: left; background: none; border: none; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 15px; }
+.chapter-row:hover { background: #f2f2f2; }
+.chapter-row.active { background: #dbeafe; }
+.chapter-row.active .chapter-title { font-weight: 700; }
+.chapter-time { color: #1d4ed8; font-weight: 700; font-variant-numeric: tabular-nums; flex: none; }
+.chapter-title { color: #0f0f0f; }
 
 @media (max-width: 640px) {
   .video-title { font-size: 17px; }
@@ -130,12 +139,17 @@ body.hide-trans .story-trans { display: none; }
 
   <div class="desc-box" id="desc-box">
     <div class="desc-meta">80 câu · 16 cảnh · dùng đủ toàn bộ từ vựng HSK 3 — bản nghe của bài văn tổng kết.</div>
-    <p>Cách dùng: nghe và đọc theo phụ đề chạy theo tiếng đọc. Bấm CC để bật/tắt phụ đề, Pinyin để ẩn/hiện pinyin, Dịch để hiện dịch nghĩa.</p>
+    <p>Cách dùng: nghe và đọc theo phụ đề chạy theo tiếng đọc. Bấm CC để bật/tắt phụ đề, Pinyin để ẩn/hiện pinyin, Dịch để hiện dịch nghĩa. Phụ lục bên dưới liệt kê 16 cảnh, bấm vào một cảnh để nhảy tới đúng giờ đó.</p>
     <div class="desc-more">
       <p>Nhấn vào thanh tiến trình để nhảy tới đoạn muốn nghe. Nút 1× đổi tốc độ 0,75× – 1× – 1,25× – 1,5×. Nút A− / A+ chỉnh cỡ chữ phụ đề, máy sẽ nhớ lựa chọn của bạn. Bấm ⛶ để xem toàn màn hình.</p>
       <p>Nguồn truyện: <a href="https://vinhhsk.io.vn/HSK3/Bai-Hoc-Tong-Ket-HSK3.html">Bài Học Tổng Kết HSK 3</a>.</p>
     </div>
     <button class="desc-toggle" id="desc-toggle">…thêm</button>
+  </div>
+
+  <div class="chapters">
+    <h2>📑 Các cảnh trong truyện</h2>
+    <div id="chapter-list"></div>
   </div>
 </div>
 
@@ -197,7 +211,7 @@ document.getElementById('progress').addEventListener('click', function(e) {
 });
 
 /* Cỡ chữ phụ đề: A- / A+, mặc định 34px, máy tự nhớ lựa chọn */
-var FONT_SIZES = [26, 30, 34, 38, 42];
+var FONT_SIZES = [26, 30, 34, 38, 42, 46, 50];
 var fontIdx = 2;
 try {
   var saved = parseInt(localStorage.getItem('hsk-sub-size'), 10);
@@ -261,17 +275,40 @@ function currentSentence(t) {
 }
 player.addEventListener('timeupdate', function() {
   showSub(currentSentence(player.currentTime));
+  updateChapter(player.currentTime);
   if (player.duration) progressFill.style.width = (player.currentTime / player.duration * 100) + '%';
   curTimeEl.textContent = fmt(player.currentTime);
 });
 player.addEventListener('seeked', function() {
   showSub(currentSentence(player.currentTime));
+  updateChapter(player.currentTime);
 });
 document.addEventListener('keydown', function(e) {
   if (e.code === 'Space' && !/INPUT|BUTTON|A/.test(document.activeElement.tagName)) {
     e.preventDefault(); togglePlay();
   }
 });
+
+/* Phụ lục 16 cảnh kiểu chapters: bấm để nhảy tới, cảnh đang nghe được tô sáng */
+var SCENES = [{"t": 0.0, "title": "🌅 Sáng thứ Bảy ở thành phố"}, {"t": 46.88, "title": "💬 Buổi sáng ở nhà"}, {"t": 61.56, "title": "📱 Tin nhắn và điện thoại"}, {"t": 95.46, "title": "🚌 Trên đường đi học"}, {"t": 130.68, "title": "🏫 Ở trường — lớp nhị hồ"}, {"t": 195.94, "title": "⚽ Trận bóng đá"}, {"t": 243.18, "title": "🛍️ Đi mua sắm"}, {"t": 277.94, "title": "🍜 Ăn trưa và tụ họp"}, {"t": 315.1, "title": "🤒 Bị cảm và đi khám"}, {"t": 372.63, "title": "🌧️ Thời tiết thay đổi"}, {"t": 424.06, "title": "🌱 Một tuần sau — thói quen mới"}, {"t": 461.18, "title": "🧭 Phương hướng và quê nhà"}, {"t": 485.86, "title": "✍️ Viết chữ và ước mơ"}, {"t": 515.58, "title": "🏪 Chủ nhật đi chơi"}, {"t": 566.38, "title": "🍎 Mua trái cây"}, {"t": 599.14, "title": "🎓 Lời kết"}];
+var chapterList = document.getElementById('chapter-list');
+var chapterRows = [];
+SCENES.forEach(function(sc) {
+  var b = document.createElement('button');
+  b.className = 'chapter-row';
+  b.innerHTML = '<span class="chapter-time">' + fmt(sc.t) + '</span><span class="chapter-title">' + sc.title + '</span>';
+  b.addEventListener('click', function() { player.currentTime = sc.t; player.play(); });
+  chapterList.appendChild(b);
+  chapterRows.push(b);
+});
+var activeScene = -1;
+function updateChapter(t) {
+  var cur = 0;
+  for (var k = 0; k < SCENES.length; k++) { if (t >= SCENES[k].t) cur = k; }
+  if (cur === activeScene) return;
+  activeScene = cur;
+  chapterRows.forEach(function(r, i) { r.classList.toggle('active', i === cur); });
+}
 
 /* Nút tương tác kiểu YouTube (chỉ lưu trong trang) */
 var liked = false, disliked = false;
