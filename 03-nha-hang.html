@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HSK 3 — Hội thoại 3 · Ở nhà hàng (17 lượt)</title>
+<style>
+* { box-sizing: border-box; }
+:root { --sub-size: 34px; }
+body { font-family: Roboto, -apple-system, "Segoe UI", Arial, sans-serif; margin: 0; background: #fff; color: #0f0f0f; line-height: 1.5; }
+button { font-family: inherit; }
+
+.wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+
+/* --- Khung phát, kiểu trình phát video --- */
+.player { position: relative; background: linear-gradient(rgba(0,0,0,.22), rgba(0,0,0,.32)), url('player-bg.jpg') center / cover, #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; }
+.stage { position: absolute; inset: 0; }
+
+/* Phụ đề phủ trên khung phát, kiểu caption YouTube */
+.subtitle-overlay { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); max-width: 88%; width: max-content; background: linear-gradient(135deg, rgba(59, 130, 246, .58), rgba(37, 99, 235, .52)); border-radius: 10px; padding: 14px 22px; text-align: center; }
+.subtitle-overlay.off { display: none; }
+.sub-zh { font-size: var(--sub-size); font-weight: 700; line-height: 2.3; color: #fff; font-family: "STKaiti", "KaiTi", "Kaiti SC", "STKaiti SC", "Noto Serif CJK SC", serif; }
+.sub-zh .sub-hint { font-size: 14px; font-weight: 400; color: #e5e5e5; }
+ruby { line-height: 2.3; }
+ruby rt { font-size: .55em; color: #facc15; font-weight: 400; line-height: 1.6; }
+body.hide-pinyin ruby rt { display: none; }
+.story-trans { font-size: 17px; color: #e5e5e5; margin: 2px 0 0; line-height: 1.5; }
+body.hide-trans .story-trans { display: none; }
+#sub-vi { margin-bottom: 0; }
+
+/* Thanh điều khiển dưới khung phát */
+.controls { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 12px 8px; background: linear-gradient(transparent, rgba(0, 0, 0, .75)); opacity: 0; transition: opacity .2s; }
+.player:hover .controls, .player.paused .controls { opacity: 1; }
+.progress { height: 5px; background: rgba(255, 255, 255, .35); border-radius: 5px; cursor: pointer; margin-bottom: 8px; }
+.progress-fill { height: 100%; width: 0; background: #ff0000; border-radius: 5px; position: relative; }
+.progress-fill::after { content: ""; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; border-radius: 50%; background: #ff0000; }
+.ctrl-row { display: flex; align-items: center; gap: 4px; }
+.ctrl-btn { background: none; border: none; color: #fff; font-size: 14px; font-weight: 600; padding: 7px 9px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.ctrl-btn:hover { background: rgba(255, 255, 255, .18); }
+.ctrl-btn.active { color: #facc15; }
+.ctrl-btn:disabled { opacity: .35; cursor: default; }
+.ctrl-btn:disabled:hover { background: none; }
+.ctrl-btn .icon { font-size: 17px; }
+.time { color: #fff; font-size: 13px; padding: 0 6px; white-space: nowrap; }
+.ctrl-row .spacer { flex: 1; }
+.vol { width: 64px; accent-color: #ff0000; cursor: pointer; }
+
+/* --- Tiêu đề + kênh + nút tương tác --- */
+.video-title { font-size: 20px; line-height: 1.4; margin: 14px 0 4px; }
+.meta-line { color: #606060; font-size: 14px; margin: 0 0 12px; }
+.channel-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0f766e, #f59e0b); color: #fff; font-weight: 700; font-size: 19px; display: flex; align-items: center; justify-content: center; flex: none; }
+.channel-name { font-weight: 600; font-size: 16px; line-height: 1.3; }
+.channel-sub { color: #606060; font-size: 12px; }
+.channel-row .spacer { flex: 1; }
+
+.action-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.pill-group { display: flex; background: #f2f2f2; border-radius: 999px; overflow: hidden; }
+.pill-group button { background: none; border: none; padding: 9px 14px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.pill-group button:hover { background: #e5e5e5; }
+.pill-group button + button { border-left: 1px solid #d9d9d9; }
+.pill-group button.active { color: #0f766e; }
+.pill { background: #f2f2f2; border: none; border-radius: 999px; padding: 9px 14px; font-size: 14px; font-weight: 600; cursor: pointer; color: #0f0f0f; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.pill:hover { background: #e5e5e5; }
+
+.desc-box { background: #f2f2f2; border-radius: 12px; padding: 14px 16px; font-size: 14px; }
+.desc-box .desc-meta { font-weight: 600; margin-bottom: 6px; }
+.desc-box p { margin: 6px 0; }
+.desc-more { display: none; }
+.desc-box.expanded .desc-more { display: block; }
+.desc-toggle { background: none; border: none; padding: 0; font-size: 14px; font-weight: 600; cursor: pointer; color: #0f0f0f; margin-top: 4px; }
+
+.chapters { margin-top: 18px; }
+.chapters h2 { font-size: 17px; margin: 0 0 6px; }
+.chapter-row { display: flex; gap: 12px; align-items: baseline; width: 100%; text-align: left; background: none; border: none; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 15px; }
+.chapter-row:hover { background: #f2f2f2; }
+.chapter-row.active { background: #dbeafe; }
+.chapter-row.active .chapter-title { font-weight: 700; }
+.chapter-time { color: #1d4ed8; font-weight: 700; font-variant-numeric: tabular-nums; flex: none; }
+.chapter-title { color: #0f0f0f; }
+
+@media (max-width: 640px) {
+  .video-title { font-size: 17px; }
+  :root { --sub-size: 26px; }
+  .sub-zh { font-size: var(--sub-size); }
+  .subtitle-overlay { padding: 10px 14px; }
+  .vol { display: none; }
+  .ctrl-row { flex-wrap: nowrap; gap: 2px; }
+  .ctrl-btn { padding: 5px 5px; font-size: 12px; }
+  .time { font-size: 11px; padding: 0 2px; }
+  @media (max-width: 380px) { .dur-sep { display: none; } }
+}
+</style>
+</head>
+<body class="hide-trans">
+<div class="wrap">
+  <div class="player paused" id="player-box">
+    <div class="stage" id="stage">
+      <div class="subtitle-overlay" id="subtitle">
+        <div class="sub-zh" id="sub-zh"><span class="sub-hint">▶ Bấm phát để nghe — phụ đề sẽ chạy theo tiếng đọc.</span></div>
+        <div class="story-trans" id="sub-vi"></div>
+      </div>
+      <div class="controls">
+        <div class="progress" id="progress"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="ctrl-row">
+          <button class="ctrl-btn" id="play-btn" aria-label="Phát / tạm dừng"><span class="icon">▶</span></button>
+          <input class="vol" id="vol" type="range" min="0" max="1" step="0.05" value="1" aria-label="Âm lượng">
+          <span class="time"><span id="cur-time">0:00</span><span class="dur-sep"> / <span id="dur-time">1:19</span></span></span>
+          <span class="spacer"></span>
+          <button class="ctrl-btn" id="speed-btn" title="Tốc độ">1×</button>
+          <button class="ctrl-btn" id="font-minus" title="Chữ nhỏ hơn">A−</button>
+          <button class="ctrl-btn" id="font-plus" title="Chữ to hơn">A+</button>
+          <button class="ctrl-btn active" id="pinyin-btn" title="Pinyin"><span class="lbl">Pinyin</span></button>
+          <button class="ctrl-btn" id="trans-btn" title="Dịch nghĩa"><span class="lbl">Dịch</span></button>
+          <button class="ctrl-btn active" id="sub-btn" title="Phụ đề">CC</button>
+          <button class="ctrl-btn" id="fs-btn" title="Toàn màn hình"><span class="icon">⛶</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h1 class="video-title">HSK 3 — Hội thoại 3 · Ở nhà hàng</h1>
+  <p class="meta-line">17 lượt thoại · 1:19 · WAV · 3,6 MB · Tiểu Hồng &amp; Tiểu Minh</p>
+
+  <div class="channel-row">
+    <div class="avatar">V</div>
+    <div>
+      <div class="channel-name">Vinh HSK</div>
+      <div class="channel-sub">@vinhhsk · Hội thoại HSK 3</div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="pill-group">
+      <button id="like-btn">👍 <span id="like-count">0</span></button>
+      <button id="dislike-btn">👎</button>
+    </div>
+    <button class="pill" id="share-btn">↗ Chia sẻ</button>
+    <a class="pill" href="03-nha-hang.wav" download>⬇ Tải xuống</a>
+    <button class="pill" id="restart-btn">↺ Nghe lại từ đầu</button>
+  </div>
+
+  <div class="desc-box" id="desc-box">
+    <div class="desc-meta">Hội thoại 3: Ở nhà hàng · 在饭店吃饭 · Tiểu Hồng (nữ) và Tiểu Minh (nam) · giọng VibeVoice-1.5B.</div>
+    <p>Cách dùng: nghe và đọc theo phụ đề chạy theo tiếng đọc. Bấm CC để bật/tắt phụ đề, Pinyin để ẩn/hiện pinyin, Dịch để hiện dịch nghĩa. Phụ lục bên dưới liệt kê các lượt thoại, bấm vào một lượt để nhảy tới đúng giờ đó.</p>
+    <div class="desc-more">
+      <p>Nhấn vào thanh tiến trình để nhảy tới đoạn muốn nghe. Nút 1× đổi tốc độ 0,75× – 1× – 1,25× – 1,5×. Nút A− / A+ chỉnh cỡ chữ phụ đề, máy sẽ nhớ lựa chọn của bạn. Bấm ⛶ để xem toàn màn hình.</p>
+    </div>
+    <button class="desc-toggle" id="desc-toggle">…thêm</button>
+  </div>
+
+  <div class="chapters">
+    <h2>💬 Các lượt thoại</h2>
+    <div id="chapter-list"></div>
+  </div>
+</div>
+
+<audio id="player" preload="metadata" src="03-nha-hang.wav"></audio>
+
+<script>
+var player = document.getElementById('player');
+var SUBS = [[0.09, 5.69], [6.41, 10.85], [10.85, 13.53], [13.53, 17.67], [18.85, 22.13], [24.84, 29.0], [29.0, 32.64], [32.64, 36.12], [36.12, 40.22], [40.98, 45.56], [45.82, 49.2], [49.3, 53.18], [53.78, 57.12], [57.82, 63.76], [63.76, 69.02], [69.02, 73.92], [74.64, 78.34]];
+var SUBTEXT = [{"zh": "<ruby>小<rt>xiǎo</rt></ruby><ruby>红<rt>hóng</rt></ruby>，<ruby>这<rt>zhè</rt></ruby><ruby>家<rt>jiā</rt></ruby><ruby>饭<rt>fàn</rt></ruby><ruby>店<rt>diàn</rt></ruby><ruby>的<rt>de</rt></ruby><ruby>菜<rt>cài</rt></ruby><ruby>很<rt>hěn</rt></ruby><ruby>好<rt>hǎo</rt></ruby><ruby>吃<rt>chī</rt></ruby>，<ruby>可<rt>kě</rt></ruby><ruby>是<rt>shì</rt></ruby><ruby>人<rt>rén</rt></ruby><ruby>很<rt>hěn</rt></ruby><ruby>多<rt>duō</rt></ruby>，<ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>要<rt>yào</rt></ruby><ruby>先<rt>xiān</rt></ruby><ruby>预<rt>yù</rt></ruby><ruby>约<rt>yuē</rt></ruby>。", "vi": "Tiểu Hồng, món ăn nhà hàng này rất ngon, nhưng đông người, chúng ta phải đặt trước."}, {"zh": "<ruby>好<rt>hǎo</rt></ruby>，<ruby>我<rt>wǒ</rt></ruby><ruby>已<rt>yǐ</rt></ruby><ruby>经<rt>jīng</rt></ruby><ruby>预<rt>yù</rt></ruby><ruby>约<rt>yuē</rt></ruby><ruby>了<rt>le</rt></ruby>。<ruby>服<rt>fú</rt></ruby><ruby>务<rt>wù</rt></ruby><ruby>员<rt>yuán</rt></ruby>，<ruby>请<rt>qǐng</rt></ruby><ruby>问<rt>wèn</rt></ruby><ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>坐<rt>zuò</rt></ruby><ruby>哪<rt>nǎ</rt></ruby><ruby>儿<rt>ér</rt></ruby>？", "vi": "Được, mình đã đặt rồi. Nhân viên ơi, xin hỏi chúng ta ngồi đâu?"}, {"zh": "<ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>坐<rt>zuò</rt></ruby><ruby>窗<rt>chuāng</rt></ruby><ruby>户<rt>hù</rt></ruby><ruby>边<rt>biān</rt></ruby><ruby>吧<rt>ba</rt></ruby>，<ruby>那<rt>nà</rt></ruby><ruby>里<rt>lǐ</rt></ruby><ruby>很<rt>hěn</rt></ruby><ruby>舒<rt>shū</rt></ruby><ruby>服<rt>fú</rt></ruby>。", "vi": "Chúng ta ngồi bên cửa sổ nhé, ở đó rất thoải mái."}, {"zh": "<ruby>好<rt>hǎo</rt></ruby>。<ruby>你<rt>nǐ</rt></ruby><ruby>想<rt>xiǎng</rt></ruby><ruby>吃<rt>chī</rt></ruby><ruby>什<rt>shén</rt></ruby><ruby>么<rt>me</rt></ruby>？<ruby>菜<rt>cài</rt></ruby><ruby>单<rt>dān</rt></ruby><ruby>在<rt>zài</rt></ruby><ruby>这<rt>zhè</rt></ruby><ruby>里<rt>lǐ</rt></ruby>，<ruby>你<rt>nǐ</rt></ruby><ruby>先<rt>xiān</rt></ruby><ruby>点<rt>diǎn</rt></ruby><ruby>菜<rt>cài</rt></ruby><ruby>吧<rt>ba</rt></ruby>。", "vi": "Được. Cậu muốn ăn gì? Thực đơn ở đây, cậu gọi món trước đi."}, {"zh": "<ruby>我<rt>wǒ</rt></ruby><ruby>想<rt>xiǎng</rt></ruby><ruby>吃<rt>chī</rt></ruby><ruby>米<rt>mǐ</rt></ruby><ruby>饭<rt>fàn</rt></ruby><ruby>和<rt>hé</rt></ruby><ruby>鱼<rt>yú</rt></ruby>。<ruby>你<rt>nǐ</rt></ruby><ruby>呢<rt>ne</rt></ruby>？<ruby>你<rt>nǐ</rt></ruby><ruby>喜<rt>xǐ</rt></ruby><ruby>欢<rt>huān</rt></ruby><ruby>吃<rt>chī</rt></ruby><ruby>什<rt>shén</rt></ruby><ruby>么<rt>me</rt></ruby>？", "vi": "Mình muốn ăn cơm và cá. Còn cậu? Cậu thích ăn gì?"}, {"zh": "<ruby>我<rt>wǒ</rt></ruby><ruby>喜<rt>xǐ</rt></ruby><ruby>欢<rt>huān</rt></ruby><ruby>吃<rt>chī</rt></ruby><ruby>蔬<rt>shū</rt></ruby><ruby>菜<rt>cài</rt></ruby><ruby>和<rt>hé</rt></ruby><ruby>水<rt>shuǐ</rt></ruby><ruby>果<rt>guǒ</rt></ruby>。<ruby>服<rt>fú</rt></ruby><ruby>务<rt>wù</rt></ruby><ruby>员<rt>yuán</rt></ruby>，<ruby>请<rt>qǐng</rt></ruby><ruby>给<rt>gěi</rt></ruby><ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>两<rt>liǎng</rt></ruby><ruby>杯<rt>bēi</rt></ruby><ruby>水<rt>shuǐ</rt></ruby>。", "vi": "Mình thích ăn rau và trái cây. Nhân viên ơi, cho chúng tôi hai cốc nước."}, {"zh": "<ruby>今<rt>jīn</rt></ruby><ruby>天<rt>tiān</rt></ruby><ruby>我<rt>wǒ</rt></ruby><ruby>请<rt>qǐng</rt></ruby><ruby>客<rt>kè</rt></ruby>，<ruby>大<rt>dà</rt></ruby><ruby>家<rt>jiā</rt></ruby><ruby>随<rt>suí</rt></ruby><ruby>便<rt>biàn</rt></ruby><ruby>点<rt>diǎn</rt></ruby><ruby>菜<rt>cài</rt></ruby>，<ruby>不<rt>bú</rt></ruby><ruby>要<rt>yào</rt></ruby><ruby>客<rt>kè</rt></ruby><ruby>气<rt>qì</rt></ruby>。", "vi": "Hôm nay mình mời, mọi người cứ gọi món thoải mái, đừng khách sáo."}, {"zh": "<ruby>好<rt>hǎo</rt></ruby><ruby>啊<rt>a</rt></ruby>。<ruby>不<rt>bù</rt></ruby><ruby>过<rt>guò</rt></ruby><ruby>下<rt>xià</rt></ruby><ruby>次<rt>cì</rt></ruby><ruby>我<rt>wǒ</rt></ruby><ruby>请<rt>qǐng</rt></ruby><ruby>你<rt>nǐ</rt></ruby>，<ruby>礼<rt>lǐ</rt></ruby><ruby>尚<rt>shàng</rt></ruby><ruby>往<rt>wǎng</rt></ruby><ruby>来<rt>lái</rt></ruby><ruby>嘛<rt>ma</rt></ruby>。", "vi": "Được. Nhưng lần sau mình mời cậu, có qua có lại mà."}, {"zh": "<ruby>这<rt>zhè</rt></ruby><ruby>家<rt>jiā</rt></ruby><ruby>饭<rt>fàn</rt></ruby><ruby>店<rt>diàn</rt></ruby><ruby>的<rt>de</rt></ruby><ruby>服<rt>fú</rt></ruby><ruby>务<rt>wù</rt></ruby><ruby>很<rt>hěn</rt></ruby><ruby>好<rt>hǎo</rt></ruby>，<ruby>服<rt>fú</rt></ruby><ruby>务<rt>wù</rt></ruby><ruby>员<rt>yuán</rt></ruby><ruby>很<rt>hěn</rt></ruby><ruby>忙<rt>máng</rt></ruby>，<ruby>可<rt>kě</rt></ruby><ruby>是<rt>shì</rt></ruby><ruby>对<rt>duì</rt></ruby><ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>很<rt>hěn</rt></ruby><ruby>好<rt>hǎo</rt></ruby>。", "vi": "Dịch vụ nhà hàng này rất tốt, nhân viên rất bận, nhưng đối với chúng ta rất tốt."}, {"zh": "<ruby>服<rt>fú</rt></ruby><ruby>务<rt>wù</rt></ruby><ruby>员<rt>yuán</rt></ruby>，<ruby>菜<rt>cài</rt></ruby><ruby>单<rt>dān</rt></ruby><ruby>上<rt>shàng</rt></ruby><ruby>这<rt>zhè</rt></ruby><ruby>个<rt>ge</rt></ruby><ruby>菜<rt>cài</rt></ruby><ruby>是<rt>shì</rt></ruby><ruby>什<rt>shén</rt></ruby><ruby>么<rt>me</rt></ruby><ruby>意<rt>yì</rt></ruby><ruby>思<rt>si</rt></ruby>？<ruby>我<rt>wǒ</rt></ruby><ruby>不<rt>bù</rt></ruby><ruby>懂<rt>dǒng</rt></ruby>。", "vi": "Nhân viên ơi, món này trong thực đơn có nghĩa là gì? Mình không hiểu."}, {"zh": "<ruby>这<rt>zhè</rt></ruby><ruby>个<rt>ge</rt></ruby><ruby>菜<rt>cài</rt></ruby><ruby>是<rt>shì</rt></ruby><ruby>鱼<rt>yú</rt></ruby>，<ruby>很<rt>hěn</rt></ruby><ruby>好<rt>hǎo</rt></ruby><ruby>吃<rt>chī</rt></ruby>。<ruby>你<rt>nǐ</rt></ruby><ruby>想<rt>xiǎng</rt></ruby><ruby>吃<rt>chī</rt></ruby><ruby>吗<rt>ma</rt></ruby>？", "vi": "Món này là cá, rất ngon. Cậu muốn ăn không?"}, {"zh": "<ruby>好<rt>hǎo</rt></ruby>，<ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>点<rt>diǎn</rt></ruby><ruby>这<rt>zhè</rt></ruby><ruby>个<rt>ge</rt></ruby><ruby>菜<rt>cài</rt></ruby><ruby>吧<rt>ba</rt></ruby>。<ruby>再<rt>zài</rt></ruby><ruby>点<rt>diǎn</rt></ruby><ruby>一<rt>yí</rt></ruby><ruby>个<rt>gè</rt></ruby><ruby>蔬<rt>shū</rt></ruby><ruby>菜<rt>cài</rt></ruby>。", "vi": "Được, chúng ta gọi món này nhé. Gọi thêm một món rau nữa."}, {"zh": "<ruby>好<rt>hǎo</rt></ruby>。<ruby>牛<rt>niú</rt></ruby><ruby>奶<rt>nǎi</rt></ruby><ruby>对<rt>duì</rt></ruby><ruby>身<rt>shēn</rt></ruby><ruby>体<rt>tǐ</rt></ruby><ruby>好<rt>hǎo</rt></ruby>，<ruby>我<rt>wǒ</rt></ruby><ruby>每<rt>měi</rt></ruby><ruby>天<rt>tiān</rt></ruby><ruby>都<rt>dōu</rt></ruby><ruby>要<rt>yào</rt></ruby><ruby>喝<rt>hē</rt></ruby><ruby>牛<rt>niú</rt></ruby><ruby>奶<rt>nǎi</rt></ruby>。", "vi": "Được. Sữa tốt cho sức khỏe, mình ngày nào cũng phải uống sữa."}, {"zh": "<ruby>对<rt>duì</rt></ruby>。<ruby>吃<rt>chī</rt></ruby><ruby>完<rt>wán</rt></ruby><ruby>饭<rt>fàn</rt></ruby>，<ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>去<rt>qù</rt></ruby><ruby>商<rt>shāng</rt></ruby><ruby>店<rt>diàn</rt></ruby><ruby>买<rt>mǎi</rt></ruby><ruby>水<rt>shuǐ</rt></ruby><ruby>果<rt>guǒ</rt></ruby>，<ruby>水<rt>shuǐ</rt></ruby><ruby>果<rt>guǒ</rt></ruby><ruby>很<rt>hěn</rt></ruby><ruby>新<rt>xīn</rt></ruby><ruby>鲜<rt>xiān</rt></ruby>，<ruby>味<rt>wèi</rt></ruby><ruby>道<rt>dào</rt></ruby><ruby>很<rt>hěn</rt></ruby><ruby>好<rt>hǎo</rt></ruby>。", "vi": "Đúng. Ăn cơm xong, chúng ta đi cửa hàng mua trái cây, trái cây rất tươi, vị rất ngon."}, {"zh": "<ruby>对<rt>duì</rt></ruby>。<ruby>菜<rt>cài</rt></ruby><ruby>来<rt>lái</rt></ruby><ruby>了<rt>le</rt></ruby>，<ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>先<rt>xiān</rt></ruby><ruby>吃<rt>chī</rt></ruby><ruby>饭<rt>fàn</rt></ruby><ruby>吧<rt>ba</rt></ruby>。<ruby>吃<rt>chī</rt></ruby><ruby>完<rt>wán</rt></ruby><ruby>饭<rt>fàn</rt></ruby>，<ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>办<rt>bàn</rt></ruby><ruby>一<rt>yí</rt></ruby><ruby>个<rt>gè</rt></ruby><ruby>小<rt>xiǎo</rt></ruby><ruby>聚<rt>jù</rt></ruby><ruby>会<rt>huì</rt></ruby>。", "vi": "Đúng. Món ăn đến rồi, chúng ta ăn cơm trước nhé. Ăn xong, chúng ta tổ chức một buổi tụ họp nhỏ."}, {"zh": "<ruby>好<rt>hǎo</rt></ruby>。<ruby>吃<rt>chī</rt></ruby><ruby>完<rt>wán</rt></ruby><ruby>饭<rt>fàn</rt></ruby><ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>A<rt>A</rt></ruby><ruby>A<rt>A</rt></ruby><ruby>制<rt>zhì</rt></ruby>，<ruby>每<rt>měi</rt></ruby><ruby>个<rt>gè</rt></ruby><ruby>人<rt>rén</rt></ruby><ruby>自<rt>zì</rt></ruby><ruby>己<rt>jǐ</rt></ruby><ruby>付<rt>fù</rt></ruby><ruby>自<rt>zì</rt></ruby><ruby>己<rt>jǐ</rt></ruby><ruby>的<rt>de</rt></ruby><ruby>钱<rt>qián</rt></ruby>，<ruby>很<rt>hěn</rt></ruby><ruby>公<rt>gōng</rt></ruby><ruby>平<rt>píng</rt></ruby>。", "vi": "Được. Ăn xong chúng ta chia đều, mỗi người tự trả tiền của mình, rất công bằng."}, {"zh": "<ruby>好<rt>hǎo</rt></ruby>。<ruby>以<rt>yǐ</rt></ruby><ruby>后<rt>hòu</rt></ruby><ruby>我<rt>wǒ</rt></ruby><ruby>们<rt>men</rt></ruby><ruby>有<rt>yǒu</rt></ruby><ruby>机<rt>jī</rt></ruby><ruby>会<rt>huì</rt></ruby><ruby>还<rt>hái</rt></ruby><ruby>要<rt>yào</rt></ruby><ruby>一<rt>yì</rt></ruby><ruby>起<rt>qǐ</rt></ruby><ruby>来<rt>lái</rt></ruby><ruby>吃<rt>chī</rt></ruby><ruby>饭<rt>fàn</rt></ruby>。", "vi": "Được. Sau này có cơ hội chúng ta còn phải cùng đến ăn cơm."}];
+var playerBox = document.getElementById('player-box');
+var subBar = document.getElementById('subtitle');
+var subZh = document.getElementById('sub-zh');
+var subVi = document.getElementById('sub-vi');
+var playBtn = document.getElementById('play-btn');
+var progressFill = document.getElementById('progress-fill');
+var curTimeEl = document.getElementById('cur-time');
+var durTimeEl = document.getElementById('dur-time');
+var currentIdx = -1;
+var SPEEDS = [0.75, 1, 1.25, 1.5];
+var speedIdx = 1;
+
+function fmt(t) {
+  if (!isFinite(t)) return '0:00';
+  var m = Math.floor(t / 60), s = Math.floor(t % 60);
+  return m + ':' + (s < 10 ? '0' : '') + s;
+}
+function setPlayingUI(playing) {
+  playerBox.classList.toggle('playing', playing);
+  playerBox.classList.toggle('paused', !playing);
+  playBtn.innerHTML = '<span class="icon">' + (playing ? '⏸' : '▶') + '</span>';
+}
+function togglePlay() {
+  if (player.paused) { player.play(); } else { player.pause(); }
+}
+playBtn.addEventListener('click', togglePlay);
+var stage = document.getElementById('stage');
+var tapTimer = null;
+stage.addEventListener('click', function(e) {
+  if (e.target.closest('.controls')) return;
+  if (tapTimer) return; /* second tap of a double-tap: wait for dblclick */
+  tapTimer = setTimeout(function() { tapTimer = null; togglePlay(); }, 250);
+});
+stage.addEventListener('dblclick', function(e) {
+  if (e.target.closest('.controls')) return;
+  if (tapTimer) { clearTimeout(tapTimer); tapTimer = null; }
+  if (document.fullscreenElement) { document.exitFullscreen(); }
+  else { enterFullscreen(); }
+});
+player.addEventListener('play', function() { setPlayingUI(true); });
+player.addEventListener('pause', function() { setPlayingUI(false); });
+player.addEventListener('loadedmetadata', function() { durTimeEl.textContent = fmt(player.duration); });
+
+document.getElementById('vol').addEventListener('input', function(e) { player.volume = parseFloat(e.target.value); });
+
+document.getElementById('progress').addEventListener('click', function(e) {
+  var r = e.currentTarget.getBoundingClientRect();
+  var frac = (e.clientX - r.left) / r.width;
+  if (player.duration) player.currentTime = frac * player.duration;
+});
+
+/* Cỡ chữ phụ đề: A- / A+, mặc định 34px, máy tự nhớ lựa chọn */
+var FONT_SIZES = [26, 30, 34, 38, 42, 46, 50];
+var fontIdx = 2;
+try {
+  var saved = parseInt(localStorage.getItem('hsk-sub-size'), 10);
+  if (FONT_SIZES.indexOf(saved) >= 0) fontIdx = FONT_SIZES.indexOf(saved);
+} catch (e) {}
+function applyFontSize() {
+  document.documentElement.style.setProperty('--sub-size', FONT_SIZES[fontIdx] + 'px');
+  document.getElementById('font-minus').disabled = fontIdx === 0;
+  document.getElementById('font-plus').disabled = fontIdx === FONT_SIZES.length - 1;
+  try { localStorage.setItem('hsk-sub-size', FONT_SIZES[fontIdx]); } catch (e) {}
+}
+applyFontSize();
+document.getElementById('font-minus').addEventListener('click', function() {
+  if (fontIdx > 0) { fontIdx--; applyFontSize(); }
+});
+document.getElementById('font-plus').addEventListener('click', function() {
+  if (fontIdx < FONT_SIZES.length - 1) { fontIdx++; applyFontSize(); }
+});
+document.getElementById('speed-btn').addEventListener('click', function(e) {
+  speedIdx = (speedIdx + 1) % SPEEDS.length;
+  player.playbackRate = SPEEDS[speedIdx];
+  e.currentTarget.textContent = (SPEEDS[speedIdx] + '').replace('.', ',') + '×';
+});
+document.getElementById('restart-btn').addEventListener('click', function() { player.currentTime = 0; player.play(); });
+function tryLockLandscape() {
+  try {
+    if (screen.orientation && screen.orientation.lock) {
+      var lk = screen.orientation.lock('landscape');
+      if (lk && lk.catch) lk.catch(function() {});
+    }
+  } catch (e) {}
+}
+function enterFullscreen() {
+  var pr = playerBox.requestFullscreen ? playerBox.requestFullscreen() : null;
+  if (pr && pr.catch) pr.catch(function() {});
+  tryLockLandscape();
+}
+document.addEventListener('fullscreenchange', function() {
+  if (document.fullscreenElement) { tryLockLandscape(); }
+  else {
+    try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+  }
+});
+document.getElementById('fs-btn').addEventListener('click', function() {
+  if (document.fullscreenElement) { document.exitFullscreen(); }
+  else { enterFullscreen(); }
+});
+
+function toggleTrans() {
+  var hidden = document.body.classList.toggle('hide-trans');
+  document.getElementById('trans-btn').classList.toggle('active', !hidden);
+}
+function togglePinyin() {
+  var hidden = document.body.classList.toggle('hide-pinyin');
+  document.getElementById('pinyin-btn').classList.toggle('active', !hidden);
+}
+function toggleSub() {
+  var off = subBar.classList.toggle('off');
+  document.getElementById('sub-btn').classList.toggle('active', !off);
+}
+document.getElementById('trans-btn').addEventListener('click', toggleTrans);
+document.getElementById('pinyin-btn').addEventListener('click', togglePinyin);
+document.getElementById('sub-btn').addEventListener('click', toggleSub);
+
+function showSub(i) {
+  if (i === currentIdx) return;
+  currentIdx = i;
+  if (i < 0) return;
+  subZh.innerHTML = SUBTEXT[i].zh;
+  subVi.textContent = SUBTEXT[i].vi;
+}
+function currentSentence(t) {
+  for (var k = 0; k < SUBS.length; k++) {
+    if (t >= SUBS[k][0] && t < SUBS[k][1]) return k;
+  }
+  for (var k = SUBS.length - 1; k >= 0; k--) {
+    if (t >= SUBS[k][1]) return k;
+  }
+  return -1;
+}
+player.addEventListener('timeupdate', function() {
+  showSub(currentSentence(player.currentTime));
+  updateChapter(player.currentTime);
+  if (player.duration) progressFill.style.width = (player.currentTime / player.duration * 100) + '%';
+  curTimeEl.textContent = fmt(player.currentTime);
+});
+player.addEventListener('seeked', function() {
+  showSub(currentSentence(player.currentTime));
+  updateChapter(player.currentTime);
+});
+document.addEventListener('keydown', function(e) {
+  if (e.code === 'Space' && !/INPUT|BUTTON|A/.test(document.activeElement.tagName)) {
+    e.preventDefault(); togglePlay();
+  }
+});
+
+/* Phụ lục 16 cảnh kiểu chapters: bấm để nhảy tới, cảnh đang nghe được tô sáng */
+var SCENES = [{"t": 0.09, "title": "Tiểu Minh: 小红这家饭店的菜很好吃可是人很多"}, {"t": 6.41, "title": "Tiểu Hồng: 好我已经预约了服务员请问我们坐哪"}, {"t": 10.85, "title": "Tiểu Minh: 我们坐窗户边吧那里很舒服"}, {"t": 13.53, "title": "Tiểu Hồng: 好你想吃什么菜单在这里你先点菜吧"}, {"t": 18.85, "title": "Tiểu Minh: 我想吃米饭和鱼你呢你喜欢吃什么"}, {"t": 24.84, "title": "Tiểu Hồng: 我喜欢吃蔬菜和水果服务员请给我们"}, {"t": 29.0, "title": "Tiểu Minh: 今天我请客大家随便点菜不要客气"}, {"t": 32.64, "title": "Tiểu Hồng: 好啊不过下次我请你礼尚往来嘛"}, {"t": 36.12, "title": "Tiểu Minh: 这家饭店的服务很好服务员很忙可是"}, {"t": 40.98, "title": "Tiểu Hồng: 服务员菜单上这个菜是什么意思我不"}, {"t": 45.82, "title": "Tiểu Minh: 这个菜是鱼很好吃你想吃吗"}, {"t": 49.3, "title": "Tiểu Hồng: 好我们点这个菜吧再点一个蔬菜"}, {"t": 53.78, "title": "Tiểu Minh: 好牛奶对身体好我每天都要喝牛奶"}, {"t": 57.82, "title": "Tiểu Hồng: 对吃完饭我们去商店买水果水果很新"}, {"t": 63.76, "title": "Tiểu Hồng: 对菜来了我们先吃饭吧吃完饭我们办"}, {"t": 69.02, "title": "Tiểu Minh: 好吃完饭我们AA制每个人自己付自"}, {"t": 74.64, "title": "Tiểu Hồng: 好以后我们有机会还要一起来吃饭"}];
+var chapterList = document.getElementById('chapter-list');
+var chapterRows = [];
+SCENES.forEach(function(sc) {
+  var b = document.createElement('button');
+  b.className = 'chapter-row';
+  b.innerHTML = '<span class="chapter-time">' + fmt(sc.t) + '</span><span class="chapter-title">' + sc.title + '</span>';
+  b.addEventListener('click', function() { player.currentTime = sc.t; player.play(); });
+  chapterList.appendChild(b);
+  chapterRows.push(b);
+});
+var activeScene = -1;
+function updateChapter(t) {
+  var cur = 0;
+  for (var k = 0; k < SCENES.length; k++) { if (t >= SCENES[k].t) cur = k; }
+  if (cur === activeScene) return;
+  activeScene = cur;
+  chapterRows.forEach(function(r, i) { r.classList.toggle('active', i === cur); });
+}
+
+/* Nút tương tác kiểu YouTube (chỉ lưu trong trang) */
+var liked = false, disliked = false;
+document.getElementById('like-btn').addEventListener('click', function() {
+  liked = !liked; if (liked) disliked = false;
+  document.getElementById('like-count').textContent = liked ? 1 : 0;
+  this.classList.toggle('active', liked);
+  document.getElementById('dislike-btn').classList.toggle('active', disliked);
+});
+document.getElementById('dislike-btn').addEventListener('click', function() {
+  disliked = !disliked; if (disliked) liked = false;
+  document.getElementById('like-count').textContent = liked ? 1 : 0;
+  this.classList.toggle('active', disliked);
+  document.getElementById('like-btn').classList.toggle('active', liked);
+});
+document.getElementById('share-btn').addEventListener('click', function() {
+  var btn = this;
+  function done() { btn.textContent = '✓ Đã sao chép'; setTimeout(function() { btn.textContent = '↗ Chia sẻ'; }, 2000); }
+  if (navigator.clipboard) { navigator.clipboard.writeText(location.href).then(done, done); } else { done(); }
+});
+document.getElementById('desc-toggle').addEventListener('click', function() {
+  var open = document.getElementById('desc-box').classList.toggle('expanded');
+  this.textContent = open ? 'Ẩn bớt' : '…thêm';
+});
+</script>
+</body>
+</html>
