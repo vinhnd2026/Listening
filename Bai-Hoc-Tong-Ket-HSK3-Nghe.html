@@ -6,6 +6,7 @@
 <title>HSK 3 — Bài Tổng Kết · Nghe truyện (80 câu)</title>
 <style>
 * { box-sizing: border-box; }
+:root { --sub-size: 34px; }
 body { font-family: Roboto, -apple-system, "Segoe UI", Arial, sans-serif; margin: 0; background: #fff; color: #0f0f0f; line-height: 1.5; }
 button { font-family: inherit; }
 
@@ -22,7 +23,7 @@ button { font-family: inherit; }
 .subtitle-overlay { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); max-width: 88%; width: max-content; background: rgba(0, 0, 0, .55); border-radius: 10px; padding: 14px 22px; text-align: center; }
 .player.paused .subtitle-overlay { top: auto; bottom: 62px; transform: translateX(-50%); }
 .subtitle-overlay.off { display: none; }
-.sub-zh { font-size: 30px; font-weight: 700; line-height: 2.3; color: #fff; font-family: "STKaiti", "KaiTi", "Kaiti SC", "STKaiti SC", "Noto Serif CJK SC", serif; }
+.sub-zh { font-size: var(--sub-size); font-weight: 700; line-height: 2.3; color: #fff; font-family: "STKaiti", "KaiTi", "Kaiti SC", "STKaiti SC", "Noto Serif CJK SC", serif; }
 .sub-zh .sub-hint { font-size: 14px; font-weight: 400; color: #e5e5e5; }
 ruby { line-height: 2.3; }
 ruby rt { font-size: .55em; color: #facc15; font-weight: 400; line-height: 1.6; }
@@ -41,6 +42,8 @@ body.hide-trans .story-trans { display: none; }
 .ctrl-btn { background: none; border: none; color: #fff; font-size: 14px; font-weight: 600; padding: 7px 9px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
 .ctrl-btn:hover { background: rgba(255, 255, 255, .18); }
 .ctrl-btn.active { color: #facc15; }
+.ctrl-btn:disabled { opacity: .35; cursor: default; }
+.ctrl-btn:disabled:hover { background: none; }
 .ctrl-btn .icon { font-size: 17px; }
 .time { color: #fff; font-size: 13px; padding: 0 6px; white-space: nowrap; }
 .ctrl-row .spacer { flex: 1; }
@@ -75,7 +78,8 @@ body.hide-trans .story-trans { display: none; }
 
 @media (max-width: 640px) {
   .video-title { font-size: 17px; }
-  .sub-zh { font-size: 22px; }
+  :root { --sub-size: 26px; }
+  .sub-zh { font-size: var(--sub-size); }
   .subtitle-overlay { padding: 10px 14px; }
   .player.paused .subtitle-overlay { bottom: 52px; }
   .vol { display: none; }
@@ -100,6 +104,8 @@ body.hide-trans .story-trans { display: none; }
           <span class="time"><span id="cur-time">0:00</span> / <span id="dur-time">10:12</span></span>
           <span class="spacer"></span>
           <button class="ctrl-btn" id="speed-btn" title="Tốc độ">1×</button>
+          <button class="ctrl-btn" id="font-minus" title="Chữ nhỏ hơn">A−</button>
+          <button class="ctrl-btn" id="font-plus" title="Chữ to hơn">A+</button>
           <button class="ctrl-btn active" id="pinyin-btn" title="Pinyin"><span class="lbl">Pinyin</span></button>
           <button class="ctrl-btn" id="trans-btn" title="Dịch nghĩa"><span class="lbl">Dịch</span></button>
           <button class="ctrl-btn active" id="sub-btn" title="Phụ đề">CC</button>
@@ -136,7 +142,7 @@ body.hide-trans .story-trans { display: none; }
     <div class="desc-meta">80 câu · 16 cảnh · dùng đủ toàn bộ từ vựng HSK 3 — bản nghe của bài văn tổng kết.</div>
     <p>Cách dùng: nghe và đọc theo phụ đề chạy theo tiếng đọc. Bấm CC để bật/tắt phụ đề, Pinyin để ẩn/hiện pinyin, Dịch để hiện dịch nghĩa.</p>
     <div class="desc-more">
-      <p>Nhấn vào thanh tiến trình để nhảy tới đoạn muốn nghe. Nút 1× đổi tốc độ 0,75× – 1× – 1,25× – 1,5×. Bấm ⛶ để xem toàn màn hình.</p>
+      <p>Nhấn vào thanh tiến trình để nhảy tới đoạn muốn nghe. Nút 1× đổi tốc độ 0,75× – 1× – 1,25× – 1,5×. Nút A− / A+ chỉnh cỡ chữ phụ đề, máy sẽ nhớ lựa chọn của bạn. Bấm ⛶ để xem toàn màn hình.</p>
       <p>Nguồn truyện: <a href="https://vinhhsk.io.vn/HSK3/Bai-Hoc-Tong-Ket-HSK3.html">Bài Học Tổng Kết HSK 3</a>.</p>
     </div>
     <button class="desc-toggle" id="desc-toggle">…thêm</button>
@@ -202,6 +208,26 @@ document.getElementById('progress').addEventListener('click', function(e) {
   if (player.duration) player.currentTime = frac * player.duration;
 });
 
+/* Cỡ chữ phụ đề: A- / A+, mặc định 34px, máy tự nhớ lựa chọn */
+var FONT_SIZES = [26, 30, 34, 38, 42];
+var fontIdx = 2;
+try {
+  var saved = parseInt(localStorage.getItem('hsk-sub-size'), 10);
+  if (FONT_SIZES.indexOf(saved) >= 0) fontIdx = FONT_SIZES.indexOf(saved);
+} catch (e) {}
+function applyFontSize() {
+  document.documentElement.style.setProperty('--sub-size', FONT_SIZES[fontIdx] + 'px');
+  document.getElementById('font-minus').disabled = fontIdx === 0;
+  document.getElementById('font-plus').disabled = fontIdx === FONT_SIZES.length - 1;
+  try { localStorage.setItem('hsk-sub-size', FONT_SIZES[fontIdx]); } catch (e) {}
+}
+applyFontSize();
+document.getElementById('font-minus').addEventListener('click', function() {
+  if (fontIdx > 0) { fontIdx--; applyFontSize(); }
+});
+document.getElementById('font-plus').addEventListener('click', function() {
+  if (fontIdx < FONT_SIZES.length - 1) { fontIdx++; applyFontSize(); }
+});
 document.getElementById('speed-btn').addEventListener('click', function(e) {
   speedIdx = (speedIdx + 1) % SPEEDS.length;
   player.playbackRate = SPEEDS[speedIdx];
