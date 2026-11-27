@@ -15,13 +15,9 @@ button { font-family: inherit; }
 /* --- Khung phát, kiểu trình phát video --- */
 .player { position: relative; background: linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,.55)), url('player-bg.jpg') center / cover, #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; }
 .stage { position: absolute; inset: 0; }
-.big-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 68px; height: 48px; background: rgba(255, 0, 0, .92); border: none; border-radius: 12px; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.big-play:hover { background: #ff0000; }
-.player.playing .big-play { display: none; }
 
 /* Phụ đề phủ trên khung phát, kiểu caption YouTube */
 .subtitle-overlay { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); max-width: 88%; width: max-content; background: rgba(0, 0, 0, .55); border-radius: 10px; padding: 14px 22px; text-align: center; }
-.player.paused .subtitle-overlay { top: auto; bottom: 62px; transform: translateX(-50%); }
 .subtitle-overlay.off { display: none; }
 .sub-zh { font-size: var(--sub-size); font-weight: 700; line-height: 2.3; color: #fff; font-family: "STKaiti", "KaiTi", "Kaiti SC", "STKaiti SC", "Noto Serif CJK SC", serif; }
 .sub-zh .sub-hint { font-size: 14px; font-weight: 400; color: #e5e5e5; }
@@ -81,7 +77,6 @@ body.hide-trans .story-trans { display: none; }
   :root { --sub-size: 26px; }
   .sub-zh { font-size: var(--sub-size); }
   .subtitle-overlay { padding: 10px 14px; }
-  .player.paused .subtitle-overlay { bottom: 52px; }
   .vol { display: none; }
   .ctrl-btn .lbl { display: none; }
 }
@@ -91,7 +86,6 @@ body.hide-trans .story-trans { display: none; }
 <div class="wrap">
   <div class="player paused" id="player-box">
     <div class="stage" id="stage">
-      <button class="big-play" id="big-play" aria-label="Phát">▶</button>
       <div class="subtitle-overlay" id="subtitle">
         <div class="sub-zh" id="sub-zh"><span class="sub-hint">▶ Bấm phát để nghe — phụ đề sẽ chạy theo tiếng đọc.</span></div>
         <div class="story-trans" id="sub-vi"></div>
@@ -160,7 +154,6 @@ var subBar = document.getElementById('subtitle');
 var subZh = document.getElementById('sub-zh');
 var subVi = document.getElementById('sub-vi');
 var playBtn = document.getElementById('play-btn');
-var bigPlay = document.getElementById('big-play');
 var progressFill = document.getElementById('progress-fill');
 var curTimeEl = document.getElementById('cur-time');
 var durTimeEl = document.getElementById('dur-time');
@@ -182,11 +175,10 @@ function togglePlay() {
   if (player.paused) { player.play(); } else { player.pause(); }
 }
 playBtn.addEventListener('click', togglePlay);
-bigPlay.addEventListener('click', togglePlay);
 var stage = document.getElementById('stage');
 var tapTimer = null;
 stage.addEventListener('click', function(e) {
-  if (e.target.closest('.controls') || e.target.closest('#big-play')) return;
+  if (e.target.closest('.controls')) return;
   if (tapTimer) return; /* second tap of a double-tap: wait for dblclick */
   tapTimer = setTimeout(function() { tapTimer = null; togglePlay(); }, 250);
 });
