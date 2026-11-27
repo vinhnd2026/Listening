@@ -6,40 +6,44 @@
 <title>HSK 3 — Bài Tổng Kết · Nghe truyện (80 câu)</title>
 <style>
 * { box-sizing: border-box; }
-body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; background: #f4f1ea; color: #22252b; line-height: 1.55; }
-.wrap { max-width: 740px; margin: 0 auto; padding: 12px 14px 50px; }
-h1 { font-size: 22px; margin: 10px 0 4px; }
-.sub { color: #6b7280; font-size: 14px; margin-bottom: 14px; }
-.card { background: #fff; border-radius: 14px; padding: 18px 20px; margin: 16px 0; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-.card h2 { font-size: 18px; margin: 0 0 12px; border-bottom: 2px solid #f4f1ea; padding-bottom: 8px; }
-.badge { font-size: 12px; font-weight: 600; background: #eef2ff; color: #3730a3; padding: 3px 8px; border-radius: 6px; }
-.hint { color: #6b7280; font-size: 13px; }
-.btn-sm { font-size: 12px; padding: 5px 9px; border-radius: 6px; border: 1px solid #d1d5db; background: #f9fafb; cursor: pointer; color: #374151; font-weight: 600; }
-.btn-sm:hover { background: #f3f4f6; }
-.btn-sm.active { background: #2563eb; color: #fff; border-color: #2563eb; }
-.audio-card { position: sticky; top: 0; z-index: 30; }
-.audio-card audio { width: 100%; margin: 10px 0 6px; }
-.rate-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 13px; color: #4b5563; }
-.rate-row .btn-sm.on { background: #2563eb; color: #fff; border-color: #2563eb; }
-.nav { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { display: inline-block; font-size: 13px; background: #eef2ff; color: #3730a3; padding: 4px 10px; border-radius: 999px; text-decoration: none; font-weight: 600; }
-.chip:hover { background: #dbeafe; }
-.reading-line { font-size: 19px; font-weight: 600; line-height: 2.1; }
+body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; background: linear-gradient(180deg, #fdf3e3 0%, #fbeedd 55%, #f5e2cf 100%); color: #292524; line-height: 1.55; min-height: 100vh; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 28px 16px 60px; }
+h1 { font-size: 26px; margin: 8px 0 6px; color: #134e4a; }
+h1::after { content: ""; display: block; width: 72px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, #0d9488, #f59e0b); margin-top: 10px; }
+.sub { color: #78716c; font-size: 14px; margin-bottom: 20px; }
+.card { background: #fffdf9; border: 1px solid #f0e2cd; border-top: 4px solid #0d9488; border-radius: 20px; padding: 26px 28px 30px; margin: 16px 0; box-shadow: 0 10px 30px rgba(120, 72, 20, .12); }
+.card h2 { font-size: 19px; margin: 0; color: #134e4a; }
+.badge { font-size: 12px; font-weight: 600; background: #ccfbf1; color: #0f766e; padding: 3px 9px; border-radius: 999px; }
+.hint { color: #a8a29e; font-size: 13px; margin: 20px 0 0; }
+.btn-sm { font-size: 13px; padding: 9px 15px; border-radius: 999px; border: 1px solid #e7e5e4; background: #fff; cursor: pointer; color: #44403c; font-weight: 600; }
+.btn-sm:hover { background: #f5f5f4; border-color: #d6d3d1; }
+.btn-sm.active { background: #0f766e; color: #fff; border-color: #0f766e; }
+.btn-link { font-size: 13px; font-weight: 600; color: #0f766e; text-decoration: none; padding: 9px 15px; border-radius: 999px; border: 1px solid #99f6e4; background: #f0fdfa; }
+.btn-link:hover { background: #ccfbf1; }
+.audio-card audio { width: 100%; margin: 18px 0 4px; }
+.controls { margin-top: 28px; padding-top: 24px; border-top: 1px solid #f0e7da; }
+.ctl-group { margin-bottom: 20px; }
+.ctl-group:last-of-type { margin-bottom: 0; }
+.ctl-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #a8a29e; font-weight: 700; margin-bottom: 9px; }
+.rate-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.rate-row .btn-sm.on { background: #0f766e; color: #fff; border-color: #0f766e; }
+.action-row, .toggle-row { display: flex; gap: 8px; flex-wrap: wrap; }
 ruby { line-height: 2.3; }
-ruby rt { font-size: .55em; color: #2563eb; font-weight: 400; line-height: 1.6; }
+ruby rt { font-size: .55em; color: #fcd34d; font-weight: 400; line-height: 1.6; }
 body.hide-pinyin ruby rt { display: none; }
 .story-trans { font-size: 14px; color: #475569; margin: 2px 0 10px; line-height: 1.6; }
 body.hide-trans .story-trans { display: none; }
-h3 { scroll-margin-top: 340px; }
-.subtitle-bar { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 14px; margin-top: 10px; min-height: 64px; }
+.subtitle-bar { background: linear-gradient(135deg, #134e4a 0%, #0f766e 60%, #0d9488 100%); border: none; border-radius: 16px; padding: 24px 26px; margin-top: 18px; min-height: 110px; box-shadow: 0 6px 18px rgba(15, 118, 110, .28); }
 .subtitle-bar.off { display: none; }
-.sub-zh { font-size: 20px; font-weight: 700; line-height: 2.5; font-family: "STKaiti", "KaiTi", "Kaiti SC", "STKaiti SC", "Noto Serif CJK SC", serif; }
-.sub-zh .sub-hint { font-size: 14px; font-weight: 400; color: #6b7280; }
-#sub-vi { margin-bottom: 0; }
-.reading-line { cursor: pointer; border-radius: 8px; padding: 2px 6px; margin-left: -6px; margin-right: -6px; }
-.reading-line:hover { background: #f8fafc; }
-.reading-line.active { background: #fef3c7; box-shadow: inset 3px 0 0 #f59e0b; }
-a { color: #2563eb; }
+.sub-zh { font-size: 22px; font-weight: 700; line-height: 2.5; color: #ffffff; font-family: "STKaiti", "KaiTi", "Kaiti SC", "STKaiti SC", "Noto Serif CJK SC", serif; }
+.sub-zh .sub-hint { font-size: 14px; font-weight: 400; color: #99f6e4; }
+#sub-vi { margin-bottom: 0; color: #ccfbf1; }
+a { color: #0f766e; }
+@media (max-width: 560px) {
+  .card { padding: 20px 18px 24px; }
+  .subtitle-bar { padding: 20px 18px; }
+  .sub-zh { font-size: 20px; }
+}
 </style>
 </head>
 <body class="hide-trans">
@@ -54,20 +58,32 @@ a { color: #2563eb; }
       <div class="sub-zh" id="sub-zh"><span class="sub-hint">▶ Bấm phát để nghe — phụ đề sẽ chạy theo tiếng đọc.</span></div>
       <div class="story-trans" id="sub-vi"></div>
     </div>
-    <div class="rate-row">
-      <span>Tốc độ:</span>
-      <button class="btn-sm" data-rate="0.75" onclick="setRate(0.75, this)">0,75×</button>
-      <button class="btn-sm on" data-rate="1" onclick="setRate(1, this)">1×</button>
-      <button class="btn-sm" data-rate="1.25" onclick="setRate(1.25, this)">1,25×</button>
-      <button class="btn-sm" data-rate="1.5" onclick="setRate(1.5, this)">1,5×</button>
-      <button class="btn-sm" onclick="restart()">↺ Nghe lại từ đầu</button>
-      <a href="HSK3-TongKet-Story__4.mp3" download>⬇ Tải file nghe</a>
-    </div>
-    <p class="hint" style="margin:10px 0 0;">Cách dùng: nghe và đọc theo phụ đề chạy theo tiếng đọc. Bấm 👁️ để hiện dịch nghĩa, bấm Pinyin để ẩn/hiện pinyin.</p>
-    <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
-      <button class="btn-sm" id="trans-btn" onclick="toggleTrans()">👁️ Hiện dịch nghĩa</button>
-      <button class="btn-sm active" id="pinyin-btn" onclick="togglePinyin()">Pinyin: BẬT</button>
-      <button class="btn-sm active" id="sub-btn" onclick="toggleSub()">Phụ đề: BẬT</button>
+    <div class="controls">
+      <div class="ctl-group">
+        <div class="ctl-label">Tốc độ nghe</div>
+        <div class="rate-row">
+          <button class="btn-sm" data-rate="0.75" onclick="setRate(0.75, this)">0,75×</button>
+          <button class="btn-sm on" data-rate="1" onclick="setRate(1, this)">1×</button>
+          <button class="btn-sm" data-rate="1.25" onclick="setRate(1.25, this)">1,25×</button>
+          <button class="btn-sm" data-rate="1.5" onclick="setRate(1.5, this)">1,5×</button>
+        </div>
+      </div>
+      <div class="ctl-group">
+        <div class="ctl-label">Nghe lại &amp; tải về</div>
+        <div class="action-row">
+          <button class="btn-sm" onclick="restart()">↺ Nghe lại từ đầu</button>
+          <a class="btn-link" href="HSK3-TongKet-Story__4.mp3" download>⬇ Tải file nghe</a>
+        </div>
+      </div>
+      <div class="ctl-group">
+        <div class="ctl-label">Hiển thị</div>
+        <div class="toggle-row">
+          <button class="btn-sm" id="trans-btn" onclick="toggleTrans()">👁️ Hiện dịch nghĩa</button>
+          <button class="btn-sm active" id="pinyin-btn" onclick="togglePinyin()">Pinyin: BẬT</button>
+          <button class="btn-sm active" id="sub-btn" onclick="toggleSub()">Phụ đề: BẬT</button>
+        </div>
+      </div>
+      <p class="hint">Cách dùng: nghe và đọc theo phụ đề chạy theo tiếng đọc. Bấm 👁️ để hiện dịch nghĩa, bấm Pinyin để ẩn/hiện pinyin.</p>
     </div>
   </div>
 
