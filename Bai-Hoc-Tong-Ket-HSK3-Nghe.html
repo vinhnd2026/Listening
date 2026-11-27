@@ -9,14 +9,6 @@
 body { font-family: Roboto, -apple-system, "Segoe UI", Arial, sans-serif; margin: 0; background: #fff; color: #0f0f0f; line-height: 1.5; }
 button { font-family: inherit; }
 
-/* --- Top bar, kiểu YouTube --- */
-.yt-header { position: sticky; top: 0; z-index: 40; background: #fff; display: flex; align-items: center; gap: 12px; padding: 0 16px; height: 56px; border-bottom: 1px solid #e5e5e5; }
-.logo { display: flex; align-items: center; gap: 7px; font-size: 18px; font-weight: 700; letter-spacing: -.5px; text-decoration: none; color: #0f0f0f; }
-.logo-mark { width: 30px; height: 22px; background: #ff0000; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; }
-.yt-header .spacer { flex: 1; }
-.header-link { font-size: 14px; font-weight: 600; color: #0f0f0f; text-decoration: none; padding: 8px 12px; border-radius: 999px; }
-.header-link:hover { background: #f2f2f2; }
-
 .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
 
 /* --- Khung phát, kiểu trình phát video --- */
@@ -92,12 +84,6 @@ body.hide-trans .story-trans { display: none; }
 </style>
 </head>
 <body class="hide-trans">
-<header class="yt-header">
-  <a class="logo" href="#"><span class="logo-mark">▶</span> HSK Nghe</a>
-  <span class="spacer"></span>
-  <a class="header-link" href="https://vinhhsk.io.vn/HSK3/Bai-Hoc-Tong-Ket-HSK3.html">📖 Bài gốc</a>
-</header>
-
 <div class="wrap">
   <div class="player paused" id="player-box">
     <div class="stage" id="stage">
@@ -191,6 +177,19 @@ function togglePlay() {
 }
 playBtn.addEventListener('click', togglePlay);
 bigPlay.addEventListener('click', togglePlay);
+var stage = document.getElementById('stage');
+var tapTimer = null;
+stage.addEventListener('click', function(e) {
+  if (e.target.closest('.controls') || e.target.closest('#big-play')) return;
+  if (tapTimer) return; /* second tap of a double-tap: wait for dblclick */
+  tapTimer = setTimeout(function() { tapTimer = null; togglePlay(); }, 250);
+});
+stage.addEventListener('dblclick', function(e) {
+  if (e.target.closest('.controls')) return;
+  if (tapTimer) { clearTimeout(tapTimer); tapTimer = null; }
+  if (document.fullscreenElement) { document.exitFullscreen(); }
+  else { playerBox.requestFullscreen(); }
+});
 player.addEventListener('play', function() { setPlayingUI(true); });
 player.addEventListener('pause', function() { setPlayingUI(false); });
 player.addEventListener('loadedmetadata', function() { durTimeEl.textContent = fmt(player.duration); });
